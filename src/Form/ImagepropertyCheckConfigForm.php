@@ -29,22 +29,26 @@ class ImagepropertyCheckConfigForm extends ConfigFormBase {
       '#size' => 50,
     );
   }
+  // $form['imageproperty_check_pager'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => 'Pager configuration',
+  //   '#description' => t("Number of images to be displayed on a page"),
+  //   //'#default_value' => variable_get('imageproperty_check_pager', 10),
+  // );
    return parent::buildForm($form, $form_state);
   }
 
 
 public function submitForm(array &$form, FormStateInterface $form_state) {
   $userInputValues = $form_state->getUserInput();
-  dsm($userInputValues);
   $config = $this->configFactory->get('imageproperty_check.settings');
-  dsm($config);
-  // $config->set('time_spent_node_types', $userInputValues['time_spent_node_types']);
-  // $config->set('time_spent_pager_limit', $userInputValues['time_spent_pager_limit']);
-  // $config->set('time_spent_roles', $userInputValues['time_spent_roles']);
-  // $config->set('time_spent_timer', $userInputValues['time_spent_timer']);
-  // $config->set('time_spent_limit', $userInputValues['time_spent_limit']);
-  //  $config->save();
+  foreach ($userInputValues as $image_style_variable => $value) {
+    if (strpos($image_style_variable, 'imageproperty_check_type_') !== false) {
+      $config->set($image_style_variable , $value);
+
+    }
+  }
+  $config->save();
   parent::submitForm($form, $form_state);
   }
 }
-

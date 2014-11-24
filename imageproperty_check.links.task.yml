@@ -1,0 +1,17 @@
+imageproperty_check.image_glitches_reports:
+  route_name: imageproperty_check.imageproperty_check_reports
+  title: 'Image which exceed specified memory limit'
+  weight: 1
+  base_route: imageproperty_check.image_glitches_reports
+
+imageproperty_check.size_per_style:
+  route_name: imageproperty_check.config
+  title: 'Max memory for each image style'
+  weight: 2
+  base_route: imageproperty_check.image_glitches_reports
+
+imageproperty_check.cron_pager_config:
+  route_name: imageproperty_check.pager_cron_config
+  title: 'Cron and Pager Configuration'
+  weight: 3
+  base_route: imageproperty_check.image_glitches_reports
