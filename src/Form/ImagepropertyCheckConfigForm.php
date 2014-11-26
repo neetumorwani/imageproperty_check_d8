@@ -21,6 +21,7 @@ class ImagepropertyCheckConfigForm extends ConfigFormBase {
     '#markup' => t('Enter the maximum size (in <strong>Kilobytes</strong>) an image style could have. Default is 100KB.'),
   );
   $list_image_style = image_style_options();
+  unset($list_image_style['']);
   foreach ($list_image_style as $key => $value) {
     $form['imageproperty_check_type_' . $key] = array(
       '#type' => 'textfield',
@@ -29,12 +30,6 @@ class ImagepropertyCheckConfigForm extends ConfigFormBase {
       '#size' => 50,
     );
   }
-  // $form['imageproperty_check_pager'] = array(
-  //   '#type' => 'textfield',
-  //   '#title' => 'Pager configuration',
-  //   '#description' => t("Number of images to be displayed on a page"),
-  //   //'#default_value' => variable_get('imageproperty_check_pager', 10),
-  // );
    return parent::buildForm($form, $form_state);
   }
 
