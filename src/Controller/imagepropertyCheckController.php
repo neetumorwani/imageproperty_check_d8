@@ -32,17 +32,22 @@ class imagepropertyCheckController extends ControllerBase {
       foreach ($images as $image_obj) {
         $uri = $image_obj->uri;
         $image = Drupal::service('image.factory')->get($uri);
-        $image_size_kbs = $image->getFileSize());
-        // $image_size = ($image_info['file_size']) / 1000;
-        // if ($image_size > $imageproperty_check_type) {
-        //   db_insert('imageproperty_check')
-        //     ->fields(array(
-        //       'image_name' => $uri->name,
-        //       'image_size' => $image_info['file_size'],
-        //       'image_path' => $uri->uri,
-        //       'image_filename' => $uri->filename,
-        //     ))->execute();
-        // }
+        $image_name = $image_obj->name;
+        $image_path = $image_obj->uri;
+        $image_filename = $image_obj->filename;
+
+        $image_size_kbs = $image->getFileSize();
+        $image_size = ($image_size_kbs) / 1000;
+        if ($image_size > $imageproperty_check_type) {
+          $this->database->insert('imageproperty_check')
+          ->fields(array(
+            'image_name' => $image_name,
+            'image_size' => $image_size_kbs,
+            'image_path' => $image_path,
+            'image_filename' => $image_filename,
+          ))
+          ->execute();
+        }
       }
     }
 
