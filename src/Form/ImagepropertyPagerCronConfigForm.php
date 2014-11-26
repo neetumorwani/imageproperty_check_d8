@@ -25,6 +25,7 @@ class ImagepropertyPagerCronConfigForm extends ConfigFormBase {
     '#title' => 'Pager configuration',
     '#description' => t("Number of images to be displayed on a page"),
     //'#default_value' => variable_get('imageproperty_check_pager', 10),
+    '#default_value' => $this->config('imageproperty_check_pager_cron.settings')->get('imageproperty_check_pager'),
   );
   $form['imageproperty_check_cron'] = array(
     '#type' => 'textfield',
