@@ -70,8 +70,7 @@ class imagepropertyCheckController extends ControllerBase {
       $output .= t('There are no images with glitches in the memory size
       because no maximum image size is been set for image presets. You can
       set the values for the maximum memory size of each image preset
-      style from ') .
-      l(t('here'), 'admin/reports/imageproperty-size-check-errors/imageproperty-check-settings');
+      style') ;
       $output .= "<br />";
     }
     else {
@@ -87,7 +86,9 @@ class imagepropertyCheckController extends ControllerBase {
       }
     }
     return array(
-    '#theme' => 'table',
+    '#type' => 'table',
+    '#prefix' => $output,
+    // '#theme' => 'table',
     '#attributes' => array('style' => 'width:1000px'),
     '#header' => $header,
     '#rows' => $rows,
