@@ -25,7 +25,7 @@ class ImagepropertyCheckConfigForm extends ConfigFormBase {
     $form['imageproperty_check_type_' . $key] = array(
       '#type' => 'textfield',
       '#title' => $key,
-      //'#default_value' => variable_get('imageproperty_check_type' . $value['name'], 100),
+      '#default_value' => $this->config('imageproperty_check.settings')->get('imageproperty_check_type_'.$key),
       '#size' => 50,
     );
   }

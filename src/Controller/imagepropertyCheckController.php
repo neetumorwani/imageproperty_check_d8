@@ -23,6 +23,8 @@ class imagepropertyCheckController extends ControllerBase {
 
   public function imagepropertyCheckReports() {
     $form = Drupal::formBuilder()->getForm('Drupal\imageproperty_check\Form\ImagepropertyCheckRunCron');
+    db_delete('imageproperty_check')
+     ->execute();
     $list_image_style = image_style_options();
     unset($list_image_style['']);
     foreach ($list_image_style as $key => $value) {
@@ -35,14 +37,13 @@ class imagepropertyCheckController extends ControllerBase {
         $image_name = $image_obj->name;
         $image_path = $image_obj->uri;
         $image_filename = $image_obj->filename;
-
-        $image_size_kbs = $image->getFileSize();
-        $image_size = ($image_size_kbs) / 1000;
-        if ($image_size > $imageproperty_check_type) {
+        $image_size_bs = $image->getFileSize();
+        $image_size = ($image_size_bs) / 1000;
+        if ($image_size > $imageproperty_check_value) {
           $this->database->insert('imageproperty_check')
           ->fields(array(
             'image_name' => $image_name,
-            'image_size' => $image_size_kbs,
+            'image_size' => $image_size_bs,
             'image_path' => $image_path,
             'image_filename' => $image_filename,
           ))
