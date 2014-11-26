@@ -18,6 +18,7 @@ class imagepropertyCheckController extends ControllerBase {
   public function __construct() {
     $this->database = Drupal::database();
     $this->imageproperty_check_config = Drupal::config('imageproperty_check.settings');
+    $this->imageproperty_check_cron_pager = Drupal::config('imageproperty_check_pager_cron.settings');
 
   }
 
@@ -63,6 +64,7 @@ class imagepropertyCheckController extends ControllerBase {
     ->fields('ip', array('image_id', 'image_name', 'image_size', 'image_path'));
     $images_glitches = $query->execute()->fetchAll();
     //dsm($images_glitches);
+    $pager = $this->imageproperty_check_cron_pager->get('imageproperty_check_pager');
     if(!$images_glitches) {
       $output .= "<br />";
       $output .= t('There are no images with glitches in the memory size
