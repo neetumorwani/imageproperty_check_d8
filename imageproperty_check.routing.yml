@@ -19,7 +19,3 @@ imageproperty_check.pager_cron_config:
   requirements:
     _permission: 'access content'
 
-
-
-
-
