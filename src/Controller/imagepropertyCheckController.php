@@ -31,31 +31,64 @@ class imagepropertyCheckController extends ControllerBase {
       $images = file_scan_directory('public://styles/' . $key, '/.*/');
       $imageproperty_check_value = $this->imageproperty_check_config->get('imageproperty_check_type_'.$key);
       if ($imageproperty_check_value != 0) {
-      foreach ($images as $image_obj) {
-        $uri = $image_obj->uri;
-        $image = Drupal::service('image.factory')->get($uri);
-        $image_name = $image_obj->name;
-        $image_path = $image_obj->uri;
-        $image_filename = $image_obj->filename;
-        $image_size_bs = $image->getFileSize();
-        $image_size = ($image_size_bs) / 1000;
-        if ($image_size > $imageproperty_check_value) {
-          $this->database->insert('imageproperty_check')
-          ->fields(array(
-            'image_name' => $image_name,
-            'image_size' => $image_size_bs,
-            'image_path' => $image_path,
-            'image_filename' => $image_filename,
-          ))
-          ->execute();
+        foreach ($images as $image_obj) {
+          $uri = $image_obj->uri;
+          $image = Drupal::service('image.factory')->get($uri);
+          $image_name = $image_obj->name;
+          $image_path = $image_obj->uri;
+          $image_filename = $image_obj->filename;
+          $image_size_bs = $image->getFileSize();
+          $image_size = ($image_size_bs) / 1000;
+          if ($image_size > $imageproperty_check_value) {
+            $this->database->insert('imageproperty_check')
+            ->fields(array(
+              'image_name' => $image_name,
+              'image_size' => $image_size_bs,
+              'image_path' => $image_path,
+              'image_filename' => $image_filename,
+            ))
+            ->execute();
+          }
         }
       }
     }
-
+    $header = array(
+    t('Image id'),
+    t('Image name'),
+    t('Size'),
+    t('Location of the file'),
+    );
+    $rows = array();
+    $query = db_select('imageproperty_check', 'ip')
+    ->fields('ip', array('image_id', 'image_name', 'image_size', 'image_path'));
+    $images_glitches = $query->execute()->fetchAll();
+    //dsm($images_glitches);
+    if(!$images_glitches) {
+      $output .= "<br />";
+      $output .= t('There are no images with glitches in the memory size
+      because no maximum image size is been set for image presets. You can
+      set the values for the maximum memory size of each image preset
+      style from ') .
+      l(t('here'), 'admin/reports/imageproperty-size-check-errors/imageproperty-check-settings');
+      $output .= "<br />";
+    }
+    else {
+      $output .= "<br />";
+      $output .= t("<h3>Images which exceed certain size limit </h3>");
+      foreach ($images_glitches as $row) {
+        $rows[] = array(
+          $row->image_id,
+          $row->image_name,
+          format_size($row->image_size),
+          $row->image_path,
+        );
+      }
     }
     return array(
-      '#theme' => 'item_list',
-      '#items' => array(1, 2),
+    '#theme' => 'table',
+    '#attributes' => array('style' => 'width:1000px'),
+    '#header' => $header,
+    '#rows' => $rows,
     );
   }
 }
