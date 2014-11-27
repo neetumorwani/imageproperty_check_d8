@@ -26,23 +26,32 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
     $query->fields('file_managed', array('uri', 'fid'))
           ->condition('file_managed.filemime', '%image%','LIKE');
     $files_managed = $query->execute()->fetchAllKeyed();
+    dsm('files managed ');dsm($files_managed);
     $query = db_select('file_usage');
     $query->fields('file_usage', array('fid', 'count'));
     $files_usage = $query->execute()->fetchAllKeyed();
+    dsm('files usage'); dsm($files_usage);
     $list_image_style = image_style_options();
     unset($list_image_style['']);
     $original_all_images = file_scan_directory('public://', '/.*\.(png|jpg|JPG)$/');
     $options = array('min_depth' => 1);
     $original_subdirectory_images = file_scan_directory('public://', '/\.(png|jpg|JPG)$/', $options);
     $file_images = array_diff_key($original_all_images, $original_subdirectory_images);
-    dsm('file images'); dsm($file_images);
     foreach ($list_image_style as $image_style => $value) {
       $image_info = "";
       $images = file_scan_directory('public://styles/' . $image_style, '/.*/');
-      dsm($images);
       foreach ($images as $image_obj) {
-        if (array_key_exists('public://' . $uri->filename, $file_images)) {
-          dsm('yes');
+        if (array_key_exists('public://' . $image_obj->filename, $file_images)) {
+          $fid = $files_managed['public://' . $image_obj->filename];
+          $usage_count = (isset($files_usage[$fid])) ? $files_usage[$fid] : 0;
+          $orig_image_obj = Drupal::service('image.factory')->get('public://' . $image_obj->filename);
+          $orig_width = $orig_image_obj->getWidth();
+          $orig_height = $orig_image_obj->getHeight();
+          $orig_aspect_ratio = $orig_width/$orig_height;
+          $used_image_obj = Drupal::service('image.factory')->get($image_obj->uri);
+          $used_width = $used_image_obj->getWidth();
+          $used_height = $used_image_obj->getHeight();
+          $used_aspect_ratio = $used_width/$used_height;
         }
 
       }
