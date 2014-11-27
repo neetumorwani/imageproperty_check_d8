@@ -23,7 +23,8 @@ class imagepropertyCheckController extends ControllerBase {
   }
 
   public function imagepropertyCheckReports() {
-    $form = Drupal::formBuilder()->getForm('Drupal\imageproperty_check\Form\ImagepropertyCheckRunCron');
+    $form = \Drupal::formBuilder()->getForm('Drupal\imageproperty_check\Form\ImagepropertyCheckRunCron');
+    $form_render = drupal_render($form);
     db_delete('imageproperty_check')
      ->execute();
     $list_image_style = image_style_options();
@@ -63,7 +64,6 @@ class imagepropertyCheckController extends ControllerBase {
     $query = db_select('imageproperty_check', 'ip')
     ->fields('ip', array('image_id', 'image_name', 'image_size', 'image_path'));
     $images_glitches = $query->execute()->fetchAll();
-    //dsm($images_glitches);
     $pager = $this->imageproperty_check_cron_pager->get('imageproperty_check_pager');
     if(!$images_glitches) {
       $output .= "<br />";
@@ -85,10 +85,13 @@ class imagepropertyCheckController extends ControllerBase {
         );
       }
     }
+    // dsm($form_render);
+    // $a = $output.$form_render;
+    // dsm($a);
+    // @TODO Need to dispaly the form as well.
     return array(
     '#type' => 'table',
     '#prefix' => $output,
-    // '#theme' => 'table',
     '#attributes' => array('style' => 'width:1000px'),
     '#header' => $header,
     '#rows' => $rows,
