@@ -22,15 +22,15 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
   public function imagepropertyCheckAspectRatioReports() {
     $form = \Drupal::formBuilder()->getForm('Drupal\imageproperty_check\Form\ImagepropertyCheckUpdateAspectRatioImages');
     $form_render = drupal_render($form);
+    db_delete('imageproperty_check_aspect_ratio')
+     ->execute();
     $query = db_select('file_managed');
     $query->fields('file_managed', array('uri', 'fid'))
           ->condition('file_managed.filemime', '%image%','LIKE');
     $files_managed = $query->execute()->fetchAllKeyed();
-    dsm('files managed ');dsm($files_managed);
     $query = db_select('file_usage');
     $query->fields('file_usage', array('fid', 'count'));
     $files_usage = $query->execute()->fetchAllKeyed();
-    dsm('files usage'); dsm($files_usage);
     $list_image_style = image_style_options();
     unset($list_image_style['']);
     $original_all_images = file_scan_directory('public://', '/.*\.(png|jpg|JPG)$/');
@@ -58,7 +58,7 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
           else {
             $diff = ($orig_aspect_ratio - $used_aspect_ratio) * 100 / $orig_aspect_ratio;
           }
-          if ($diff > 1 && $usage_count != 0) {
+          if ($diff > 0.5 && $usage_count != 0) {
           db_insert('imageproperty_check_aspect_ratio')
           ->fields(array(
             'image_name' => $image_obj->name,
@@ -70,14 +70,61 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
             'image_style' => $image_style,
             'image_path' => file_build_uri($image_obj->filename),
           ))->execute();
+          }
         }
-        }
-
       }
     }
+    $header = array(
+    t('Image name'),
+    array('data' => t('Usage Count'), 'field' => 'usage_count'),
+    array('data' => t('Image Style'), 'field' => 'image_style'),
+    t('Original aspect ratio'),
+    t('Desired aspect ratio'),
+    array('data' => t('Image Diff'), 'field' => 'image_diff' , 'sort' => 'desc'),
+    t('Operations'),
+    );
+    $rows = array();
+    $query = db_select('imageproperty_check_aspect_ratio', 'ip')
+    ->fields('ip', array(
+      'fid',
+      'image_name',
+      'usage_count',
+      'image_style',
+      'image_original_aspect_ratio',
+      'image_aspect_ratio',
+      'image_diff',
+      'image_path',
+      ));
+    $image_aspect_ratio_glitches = $query->execute()->fetchAll();
+    //dsm($image_aspect_ratio_glitches);
+    if(!$image_aspect_ratio_glitches) {
+      $output .= "<br />";
+      $output .= t('There are no images with incorrect aspect ratio') ;
+      $output .= "<br />";
+    }
+    else {
+      $output .= "<br />";
+      $output .= t("<h3>Images with incorrect aspect ratio </h3>");
+      foreach ($image_aspect_ratio_glitches as $row) {
+        $rows[] = array(
+      substr($row->image_name, 0, 60),
+      $row->usage_count,
+      $row->image_style,
+      $row->image_original_aspect_ratio,
+      $row->image_aspect_ratio,
+      $row->image_diff . '%',
+
+
+    );
+      }
+    }
+
     return array(
-    '#theme' => 'item_list',
-    '#items' => array(1,2),
+    '#type' => 'table',
+    '#prefix' => $output,
+    '#attributes' => array('style' => 'width:1000px'),
+    '#header' => $header,
+    '#rows' => $rows,
     );
   }
 }
