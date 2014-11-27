@@ -96,7 +96,6 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
       'image_path',
       ));
     $image_aspect_ratio_glitches = $query->execute()->fetchAll();
-    //dsm($image_aspect_ratio_glitches);
     if(!$image_aspect_ratio_glitches) {
       $output .= "<br />";
       $output .= t('There are no images with incorrect aspect ratio') ;
@@ -107,15 +106,14 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
       $output .= t("<h3>Images with incorrect aspect ratio </h3>");
       foreach ($image_aspect_ratio_glitches as $row) {
         $rows[] = array(
-      substr($row->image_name, 0, 60),
-      $row->usage_count,
-      $row->image_style,
-      $row->image_original_aspect_ratio,
-      $row->image_aspect_ratio,
-      $row->image_diff . '%',
-
-
-    );
+          substr($row->image_name, 0, 60),
+          $row->usage_count,
+          $row->image_style,
+          $row->image_original_aspect_ratio,
+          $row->image_aspect_ratio,
+          $row->image_diff . '%',
+          Drupal::moduleHandler()->moduleExists('file_entity')
+          );
       }
     }
 

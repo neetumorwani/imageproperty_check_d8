@@ -85,10 +85,6 @@ class imagepropertyCheckController extends ControllerBase {
         );
       }
     }
-    // dsm($form_render);
-    // $a = $output.$form_render;
-    // dsm($a);
-    // @TODO Need to dispaly the form as well.
     return array(
     '#type' => 'table',
     '#prefix' => $output,

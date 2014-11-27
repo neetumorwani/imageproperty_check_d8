@@ -22,3 +22,8 @@ imageproperty_check.cron_pager_config:
   weight: 4
   base_route: imageproperty_check.image_glitches_reports
 
+imageproperty_check.update:
+  route_name: imageproperty_check.update_image_glitches_reports
+  title: 'Update Reports'
+  weight: 5
+  base_route: imageproperty_check.image_glitches_reports

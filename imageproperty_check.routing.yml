@@ -26,4 +26,12 @@ imageproperty_check.imageproperty_check_aspect_ratio_reports:
   requirements:
    _permission: 'view image aspect ratio stats'
 
+imageproperty_check.update_image_glitches_reports:
+  path: 'admin/reports/imageproperty-size-check-errors/update-report'
+  defaults:
+    _form: '\Drupal\imageproperty_check\Controller\ImagepropertyCheckUpdateReport'
+  requirements:
+   _permission: 'update image aspect ratio stats'
+
+
 
