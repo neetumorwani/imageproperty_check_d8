@@ -52,6 +52,25 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
           $used_width = $used_image_obj->getWidth();
           $used_height = $used_image_obj->getHeight();
           $used_aspect_ratio = $used_width/$used_height;
+          if ($used_aspect_ratio > $orig_aspect_ratio) {
+            $diff = ($used_aspect_ratio - $orig_aspect_ratio) * 100 / $orig_aspect_ratio;
+          }
+          else {
+            $diff = ($orig_aspect_ratio - $used_aspect_ratio) * 100 / $orig_aspect_ratio;
+          }
+          if ($diff > 1 && $usage_count != 0) {
+          db_insert('imageproperty_check_aspect_ratio')
+          ->fields(array(
+            'image_name' => $image_obj->name,
+            'fid' => $fid,
+            'usage_count' => $usage_count,
+            'image_original_aspect_ratio' => $orig_aspect_ratio,
+            'image_aspect_ratio' => $used_aspect_ratio,
+            'image_diff' => $diff,
+            'image_style' => $image_style,
+            'image_path' => file_build_uri($image_obj->filename),
+          ))->execute();
+        }
         }
 
       }
