@@ -22,7 +22,7 @@ imageproperty_check.pager_cron_config:
 imageproperty_check.imageproperty_check_aspect_ratio_reports:
   path: 'admin/reports/imageproperty-size-check-errors/aspect-ratio'
   defaults:
-    _content: '\Drupal\imageproperty_check\Controller\imagepropertyCheckAspectRatioController::imagepropertyCheckAspectRatioReports'
+    _content: '\Drupal\imageproperty_check\Controller\imagepropertyCheckAspectRatioController::imagepropertyCheckAspectRatioReportsDisplay'
   requirements:
    _permission: 'view image aspect ratio stats'
 
