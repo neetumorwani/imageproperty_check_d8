@@ -35,24 +35,18 @@ class ImagepropertyCheckUpdateReport extends FormBase {
     $input = $form_state->getUserInput();
     $button_clicked = $input['op'];
     if($button_clicked === 'Run cron to recieve emails regarding images with glitches') {
-      dsm('yay');
+      $imagepropertyCheckController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckController();
+      $imagepropertyCheckController->imagepropertyCheckReports();
     }
     else {
-
+      $imagepropertyCheckAspectRatioController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckAspectRatioController();
+      $imagepropertyCheckAspectRatioController->imagepropertyCheckAspectRatioReports();
     }
-    $imagepropertyCheckController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckController();
-    $imagepropertyCheckController->imagepropertyCheckReports();
-     // \Drupal\imageproperty_check\Controller\imagepropertyCheckController::imagepropertyCheckAspectRatioReports();
-    $imagepropertyCheckAspectRatioController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckAspectRatioController();
-    $imagepropertyCheckAspectRatioController->imagepropertyCheckAspectRatioReports();
-
-   // return TRUE;
-    //return new RedirectResponse(\Drupal::url('system.run_cron'));
   }
 
 
   public function imageproperty_check_run_cron(array &$form, FormStateInterface $form_state) {
-    dsm(' yay');
+
     $form_state->setRedirect('system.run_cron');
   }
 }
