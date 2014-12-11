@@ -19,6 +19,60 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
     $this->database = Drupal::database();
   }
 
+  public function imagepropertyCheckAspectRatioReportsDisplay() {
+    $header = array(
+    t('Image name'),
+    array('data' => t('Usage Count'), 'field' => 'usage_count'),
+    array('data' => t('Image Style'), 'field' => 'image_style'),
+    t('Original aspect ratio'),
+    t('Desired aspect ratio'),
+    array('data' => t('Image Diff'), 'field' => 'image_diff' , 'sort' => 'desc'),
+    t('Operations'),
+    );
+    $rows = array();
+    $query = db_select('imageproperty_check_aspect_ratio', 'ip')
+    ->fields('ip', array(
+      'fid',
+      'image_name',
+      'usage_count',
+      'image_style',
+      'image_original_aspect_ratio',
+      'image_aspect_ratio',
+      'image_diff',
+      'image_path',
+      ));
+    $image_aspect_ratio_glitches = $query->execute()->fetchAll();
+    if(!$image_aspect_ratio_glitches) {
+      $output .= "<br />";
+      $output .= t('There are no images with incorrect aspect ratio') ;
+      $output .= "<br />";
+    }
+    else {
+      $output .= "<br />";
+      $output .= t("<h3>Images with incorrect aspect ratio </h3>");
+      foreach ($image_aspect_ratio_glitches as $row) {
+        $rows[] = array(
+          substr($row->image_name, 0, 60),
+          $row->usage_count,
+          $row->image_style,
+          $row->image_original_aspect_ratio,
+          $row->image_aspect_ratio,
+          $row->image_diff . '%',
+          Drupal::moduleHandler()->moduleExists('file_entity')
+          );
+      }
+    }
+
+    return array(
+    '#type' => 'table',
+    '#prefix' => $output,
+    '#attributes' => array('style' => 'width:1000px'),
+    '#header' => $header,
+    '#rows' => $rows,
+    );
+  }
+
+
   public function imagepropertyCheckAspectRatioReports() {
     $form = \Drupal::formBuilder()->getForm('Drupal\imageproperty_check\Form\ImagepropertyCheckUpdateAspectRatioImages');
     $form_render = drupal_render($form);
