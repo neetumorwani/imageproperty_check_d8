@@ -48,6 +48,7 @@ class ImagepropertyCheckUpdateReport extends FormBase {
       $imagepropertyCheckAspectRatioController->imagepropertyCheckAspectRatioReports();
     }
     else {
+      imageproperty_check_cron();
     }
   }
 

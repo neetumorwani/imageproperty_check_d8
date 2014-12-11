@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * Implements hook_cron().
+ */
+function imageproperty_check_cron() {
+  $body = "";
+  $body .= t("This mail is to inform you that there are some images which exceed
+  the maximum memory size specified for each image style.Large size images
+  increase the loading time of the page which also hampers the performance of
+  site. ");
+  $body .= nl2br("\n");
+  //imageproperty_check_record();
+  $imagepropertyCheckController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckController();
+      $imagepropertyCheckController->imagepropertyCheckReports();
+  $query = db_select('imageproperty_check', 'ip')
+          ->fields('ip', array(
+            'image_id',
+            'image_name',
+            'image_size',
+            'image_path',
+            ))
+          ->execute()
+          ->fetchAllAssoc('image_id');
+  $header = array(
+    t('Image id'),
+    t('Image name'),
+    t('Image size'),
+    t('Image path'),
+  );
+  if ($query) {
+    $valid_email = "";
+    $from = "neetumorwani@qed42.com";
+    //$from = variable_get('site_mail');
+    foreach ($query as $row) {
+      $rows[] = array(
+        'image_id' => $row->image_id,
+        'image_name' => $row->image_name,
+        'image_size' => $row->image_size,
+        'image_path' => $row->image_path,
+      );
+    }
+    if(Drupal::moduleHandler()->moduleExists('mimemail') && Drupal::moduleHandler()->moduleExists('htmlmail')) {
+      $body .= theme('table', array(
+        'header' => $header,
+        'rows' => $rows,
+        'attributes' => array('style' => 'width:600px'),
+        ));
+    }
+    else {
+      foreach ($rows as $value) {
+        $body .= "Image Name : " . $value['image_name'] . nl2br("\n");
+        $body .= "Image Size : " . $value['image_size'] . nl2br("\n");
+        $body .= "Image Path : " . $value['image_path'] . nl2br("\n");
+        $body .= nl2br("\n");
+      }
+    }
+
+    $params = array(
+      'body' => $body,
+      'subject' => t('Warning message for large memory size images'),
+    );
+
+    // $key_mail = 'imageproperty_check_mail_key';
+    // $role_id_admin = db_select('role', 'r')
+    //                 ->fields('r', array('rid'))
+    //                 ->condition('name', 'administrator')
+    //                 ->execute()
+    //                 ->fetchAssoc();
+    // $admins = db_select('users_roles', 'ur');
+    // $admins->innerJoin('users', 'u', 'u.uid=ur.uid');
+    // $admins->fields('u', array('mail'))
+    //         ->condition('rid', $role_id_admin['rid']);
+    // $result = $admins->execute()->fetchAll();
+
+    // foreach ($result as $key => $value) {
+    //   $valid_email = $result[$key]->mail;
+    //   drupal_mail('imageproperty_check', $key_mail, $valid_email, 'en', $params, $from, TRUE);
+    // }
+  }
+}
