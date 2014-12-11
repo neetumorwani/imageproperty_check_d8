@@ -22,20 +22,24 @@ class ImagepropertyCheckUpdateReport extends FormBase {
     $form['actions']['update_report'] = array(
       '#type' => 'submit',
       '#value' => t('Update Image size and Aspect Ratio Report'),
-      '#submit' => array('imageproperty_check_update_reports'),
     );
     $form['actions']['run_cron_manually'] = array(
       '#type' => 'button',
       '#value' => t('Run cron to recieve emails regarding images with glitches'),
-      '#submit' => array('imageproperty_check_run_cron'),
       '#executes_submit_callback' => array(TRUE)  ,
     );
-
     return $form;
   }
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    dsm('in first');
+    $input = $form_state->getUserInput();
+    $button_clicked = $input['op'];
+    if($button_clicked === 'Run cron to recieve emails regarding images with glitches') {
+      dsm('yay');
+    }
+    else {
+
+    }
     $imagepropertyCheckController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckController();
     $imagepropertyCheckController->imagepropertyCheckReports();
      // \Drupal\imageproperty_check\Controller\imagepropertyCheckController::imagepropertyCheckAspectRatioReports();
