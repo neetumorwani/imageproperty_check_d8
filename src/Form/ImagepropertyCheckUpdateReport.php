@@ -43,9 +43,11 @@ class ImagepropertyCheckUpdateReport extends FormBase {
       $imagepropertyCheckController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckController();
       $imagepropertyCheckController->imagepropertyCheckReports();
     }
-    else {
+    elseif($button_clicked === 'Update Image Aspect Ratio Report') {
       $imagepropertyCheckAspectRatioController = new \Drupal\imageproperty_check\Controller\imagepropertyCheckAspectRatioController();
       $imagepropertyCheckAspectRatioController->imagepropertyCheckAspectRatioReports();
+    }
+    else {
     }
   }
 
