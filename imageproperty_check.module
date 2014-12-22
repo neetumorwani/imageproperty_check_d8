@@ -60,7 +60,7 @@ function imageproperty_check_cron() {
       'body' => $body,
       'subject' => t('Warning message for large memory size images'),
     );
-    //@Todo Cron functionality to be implemented.
+    // Cron functionality to be implemented.
      $key_mail = 'imageproperty_check_mail_key';
     $admins = db_select('users_roles', 'ur');
     $admins->innerJoin('users_field_data', 'u', 'u.uid=ur.uid');
