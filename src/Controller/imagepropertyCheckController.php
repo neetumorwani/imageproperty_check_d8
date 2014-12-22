@@ -21,6 +21,47 @@ class imagepropertyCheckController extends ControllerBase {
     $this->imageproperty_check_cron_pager = Drupal::config('imageproperty_check_pager_cron.settings');
 
   }
+  public function imagepropertyCheckReportsDisplay() {
+    $header = array(
+    t('Image id'),
+    t('Image name'),
+    t('Size'),
+    t('Location of the file'),
+    );
+    $rows = array();
+    $query = db_select('imageproperty_check', 'ip')
+    ->fields('ip', array('image_id', 'image_name', 'image_size', 'image_path'));
+    $images_glitches = $query->execute()->fetchAll();
+    $pager = $this->imageproperty_check_cron_pager->get('imageproperty_check_pager');
+    if(!$images_glitches) {
+      $output .= "<br />";
+      $output .= t('There are no images with glitches in the memory size
+      because no maximum image size is been set for image presets. You can
+      set the values for the maximum memory size of each image preset
+      style') ;
+      $output .= "<br />";
+    }
+    else {
+      $output .= "<br />";
+      $output .= t("<h3>Images which exceed certain size limit </h3>");
+      foreach ($images_glitches as $row) {
+        $rows[] = array(
+          $row->image_id,
+          $row->image_name,
+          format_size($row->image_size),
+          $row->image_path,
+        );
+      }
+    }
+    return array(
+    '#type' => 'table',
+    '#prefix' => $output,
+    '#attributes' => array('style' => 'width:1000px'),
+    '#header' => $header,
+    '#rows' => $rows,
+    );
+
+  }
 
   public function imagepropertyCheckReports() {
     $form = \Drupal::formBuilder()->getForm('Drupal\imageproperty_check\Form\ImagepropertyCheckRunCron');

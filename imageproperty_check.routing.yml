@@ -1,7 +1,7 @@
 imageproperty_check.imageproperty_check_reports:
   path: 'admin/reports/imageproperty-size-check-errors'
   defaults:
-    _content: '\Drupal\imageproperty_check\Controller\imagepropertyCheckController::imagepropertyCheckReports'
+    _content: '\Drupal\imageproperty_check\Controller\imagepropertyCheckController::imagepropertyCheckReportsDisplay'
   requirements:
    _permission: 'view image stats'
 
