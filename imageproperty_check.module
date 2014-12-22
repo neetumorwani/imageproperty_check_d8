@@ -29,7 +29,7 @@ function imageproperty_check_cron() {
     t('Image path'),
   );
   if ($query) {
-    $valid_email = "";
+    $to = "";
     $from = "neetumorwani@qed42.com";
     //$from = variable_get('site_mail');
     foreach ($query as $row) {
@@ -61,21 +61,21 @@ function imageproperty_check_cron() {
       'subject' => t('Warning message for large memory size images'),
     );
     //@Todo Cron functionality to be implemented.
-    // $key_mail = 'imageproperty_check_mail_key';
-    // $role_id_admin = db_select('role', 'r')
-    //                 ->fields('r', array('rid'))
-    //                 ->condition('name', 'administrator')
-    //                 ->execute()
-    //                 ->fetchAssoc();
-    // $admins = db_select('users_roles', 'ur');
-    // $admins->innerJoin('users', 'u', 'u.uid=ur.uid');
-    // $admins->fields('u', array('mail'))
-    //         ->condition('rid', $role_id_admin['rid']);
-    // $result = $admins->execute()->fetchAll();
-
-    // foreach ($result as $key => $value) {
-    //   $valid_email = $result[$key]->mail;
-    //   drupal_mail('imageproperty_check', $key_mail, $valid_email, 'en', $params, $from, TRUE);
-    // }
+     $key_mail = 'imageproperty_check_mail_key';
+    $admins = db_select('users_roles', 'ur');
+    $admins->innerJoin('users_field_data', 'u', 'u.uid=ur.uid');
+    $admins->fields('u', array('mail'))
+            ->condition('rid', 'administrator');
+    $result = $admins->execute()->fetchAll();
+    foreach ($result as $key => $value) {
+      $to = $result[$key]->mail;
+      $message['body'][] = "Dear !username\n\nThere is new content available on the site.";
+      \Drupal::service('plugin.manager.mail')->mail('imageproperty_check', $key, $to, 'en', $params, $from, TRUE);
+    }
   }
+}
+
+function imageproperty_check_mail($key, &$message, $params) {
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['body'];
 }
