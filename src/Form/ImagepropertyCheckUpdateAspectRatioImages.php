@@ -29,7 +29,6 @@ class ImagepropertyCheckUpdateAspectRatioImages extends FormBase {
 
 
 public function submitForm(array &$form, FormStateInterface $form_state) {
-    dsm('yay in submit');
     return new RedirectResponse(\Drupal::url('system.run_cron'));
   }
 }

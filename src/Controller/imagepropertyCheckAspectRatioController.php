@@ -17,9 +17,11 @@ class imagepropertyCheckAspectRatioController extends ControllerBase {
 
   public function __construct() {
     $this->database = Drupal::database();
+    $this->imageproperty_check_cron_pager = Drupal::config('imageproperty_check_pager_cron.settings');
   }
 
   public function imagepropertyCheckAspectRatioReportsDisplay() {
+    $pager = $this->imageproperty_check_cron_pager->get('imageproperty_check_pager');
     $header = array(
     t('Image name'),
     array('data' => t('Usage Count'), 'field' => 'usage_count'),

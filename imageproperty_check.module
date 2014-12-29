@@ -70,6 +70,9 @@ function imageproperty_check_cron() {
     foreach ($result as $key => $value) {
       $to = $result[$key]->mail;
       $message['body'][] = "Dear !username\n\nThere is new content available on the site.";
+      //Send mail only if difference between the last cron execution time and current time is greater than the time specified by the user.
+      //If the value is not set to anything than the email will be set everytime we run cron manually, else mail will be sent only after the specified time limit
+
       \Drupal::service('plugin.manager.mail')->mail('imageproperty_check', $key, $to, 'en', $params, $from, TRUE);
     }
   }

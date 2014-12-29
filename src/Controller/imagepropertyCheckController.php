@@ -29,10 +29,12 @@ class imagepropertyCheckController extends ControllerBase {
     t('Location of the file'),
     );
     $rows = array();
+    $pager = $this->imageproperty_check_cron_pager->get('imageproperty_check_pager');
     $query = db_select('imageproperty_check', 'ip')
     ->fields('ip', array('image_id', 'image_name', 'image_size', 'image_path'));
+    // $query = $query->extend('Drupal\Core\Database\Query\PagerSelectExtender');
+    // $query->limit($pager);
     $images_glitches = $query->execute()->fetchAll();
-    $pager = $this->imageproperty_check_cron_pager->get('imageproperty_check_pager');
     if(!$images_glitches) {
       $output .= "<br />";
       $output .= t('There are no images with glitches in the memory size

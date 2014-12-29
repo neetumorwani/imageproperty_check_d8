@@ -31,7 +31,7 @@ class ImagepropertyPagerCronConfigForm extends ConfigFormBase {
     '#type' => 'textfield',
     '#title' => 'Cron hour configuration',
     '#description' => t("Number of hours after which mail should be sent"),
-    //'#default_value' => variable_get('imageproperty_check_cron', 10),
+    '#default_value' => $this->config('imageproperty_check_pager_cron.settings')->get('imageproperty_check_cron')
   );
    return parent::buildForm($form, $form_state);
   }
